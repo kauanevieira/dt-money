@@ -17,7 +17,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const response = await api.get("transactions", {
       params: {
         _sort: "-createdAt",
-        q: query,
+        ...(query ? { "description:contains": query } : {}),
       },
     });
 
