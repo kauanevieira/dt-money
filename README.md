@@ -1,75 +1,88 @@
-# React + TypeScript + Vite
+# 💸 DT Money
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web para controle de finanças pessoais. Cadastre entradas e saídas, busque transações e acompanhe o resumo do seu saldo em tempo real.
 
-Currently, two official plugins are available:
+## ✨ Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Listagem de transações com descrição, categoria, valor e data formatados (pt-BR)
+- Cadastro de nova transação (entrada ou saída) em modal, com validação de formulário
+- Busca de transações por texto
+- Resumo com total de entradas, saídas e saldo
+- Atualização do contexto global sem re-renderizações desnecessárias (`use-context-selector`)
 
-## React Compiler
+## 🛠️ Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/)
+- [styled-components](https://styled-components.com/)
+- [Radix UI](https://www.radix-ui.com/) (Dialog e RadioGroup)
+- [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- [Axios](https://axios-http.com/)
+- [use-context-selector](https://github.com/dai-shi/use-context-selector)
+- [Phosphor Icons](https://phosphoricons.com/)
+- [json-server](https://github.com/typicode/json-server) (API fake)
+- ESLint
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📁 Estrutura
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── components/   # Header, Summary, NewTransactionModal
+├── contexts/     # TransactionsContext e TransactionsProvider
+├── hooks/        # useSummary
+├── lib/          # instância do axios
+├── pages/        # Transactions (e SearchForm)
+├── styles/       # tema e estilos globais
+└── utils/        # formatadores de data e moeda
 ```
+
+## 🚀 Como executar
+
+Pré-requisito: [Node.js](https://nodejs.org/) instalado.
+
+```bash
+# instalar dependências
+npm install
+
+# terminal 1: API fake em http://localhost:3333
+npm run dev:server
+
+# terminal 2: aplicação em http://localhost:5173
+npm run dev
+```
+
+> A API precisa estar rodando para a aplicação carregar e salvar transações. Os dados ficam no arquivo `server.json`.
+
+## 📜 Scripts
+
+| Script               | Descrição                                   |
+| -------------------- | ------------------------------------------- |
+| `npm run dev`        | Inicia o servidor de desenvolvimento (Vite) |
+| `npm run dev:server` | Inicia a API fake com json-server (porta 3333) |
+| `npm run build`      | Verifica os tipos e gera o build de produção |
+| `npm run preview`    | Visualiza o build localmente                |
+| `npm run lint`       | Executa o ESLint                            |
+
+## 🔌 API
+
+Endpoint base: `http://localhost:3333`
+
+| Método | Rota            | Descrição                                       |
+| ------ | --------------- | ----------------------------------------------- |
+| GET    | `/transactions` | Lista transações (`_sort=-createdAt` e `description:contains=texto` para busca) |
+| POST   | `/transactions` | Cria uma transação                              |
+
+Formato de uma transação:
+
+```json
+{
+  "id": "1",
+  "description": "Desenvolvimento de site",
+  "type": "income",
+  "category": "Venda",
+  "price": 14000,
+  "createdAt": "2022-07-29T19:36:44.505Z"
+}
+```
+
+`type` pode ser `income` (entrada) ou `outcome` (saída).
