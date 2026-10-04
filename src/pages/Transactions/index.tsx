@@ -1,3 +1,5 @@
+import { useContextSelector } from "use-context-selector";
+import { TransactionsContext } from "../../contexts/TransactionsContext";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { dateFormatter, priceFormatter } from "../../utils/formatter";
@@ -9,24 +11,9 @@ import {
 } from "./styles";
 
 export function Transactions() {
-  const transactions = [
-    {
-      id: 1,
-      description: "Freelance de website",
-      type: "income",
-      price: 6000,
-      category: "Desenvolvimento",
-      createdAt: new Date("2022-02-12 09:00:00"),
-    },
-    {
-      id: 2,
-      description: "Aluguel do apartamento",
-      type: "outcome",
-      price: 1100,
-      category: "Casa",
-      createdAt: new Date("2022-02-14 11:00:00"),
-    },
-  ] as const;
+  const transactions = useContextSelector(TransactionsContext, (context) => {
+    return context.transactions;
+  });
 
   return (
     <>
